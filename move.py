@@ -1,3 +1,6 @@
+import piece
+Piece = lambda: piece.Piece
+
 class Move():
     def __init__(self, piece: Piece, new_pos_x: int, new_pos_y: int):
         self.piece = piece

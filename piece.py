@@ -1,12 +1,16 @@
-from piecetype import PieceType
-from board import Board
-from direction import Direction
-from player import Player
-from move import Move
+from __future__ import annotations
+from enums.piecetype import PieceType
+import board
+from enums.direction import Direction
+from enums.player import Player
+import move
+
+Board = lambda: board.Board
+Move = lambda *args: move.Move(*args)
 
 class Piece:
-    def __init__(self, board: Board, player: Player, piece_type: PieceType, x: int, y: int):
-        self.board = board
+    def __init__(self, player: Player, piece_type: PieceType, x: int, y: int):
+        self.board = None  # Will be filled by the board itself
         self.player = player
         self.piece_type = piece_type
         self.x = x
@@ -32,14 +36,10 @@ class Piece:
                 new_x = self.x + direction.get_dx()
                 new_y = self.y + direction.get_dy()
                 if new_x >= 0 and new_x < self.board.width and new_y >= 0 and new_y < self.board.height:
-                    piece_on_new_pos = self.board.get_piece_on_square(new_x, new_y)
+                    piece_on_new_pos = self.board.get_piece(new_x, new_y)
                     if (piece_on_new_pos is None or piece_on_new_pos.player is not self.player):
                         moves.append(Move(self, new_x, new_y))
             return moves
 
-
-    def get_surviving_piece_if_hits(self, piece: Piece) -> Piece:
-        """
-        Determine the piece that survives when this piece hits another piece, or none if neither survive
-        """
-        pass
+    def __str__(self):
+        return str(self.player) + ": " + str(self.piece_type)
