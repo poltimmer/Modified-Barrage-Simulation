@@ -1,12 +1,14 @@
 from __future__ import annotations
+
 from enums.piecetype import PieceType
-import board
 from enums.direction import Direction
 from enums.player import Player
+import board
 import move
 
 Board = lambda: board.Board
 Move = lambda *args: move.Move(*args)
+
 
 class Piece:
     def __init__(self, player: Player, piece_type: PieceType, x: int, y: int):
@@ -35,9 +37,9 @@ class Piece:
             for direction in directions:
                 new_x = self.x + direction.get_dx()
                 new_y = self.y + direction.get_dy()
-                if new_x >= 0 and new_x < self.board.width and new_y >= 0 and new_y < self.board.height:
+                if 0 <= new_x < self.board.width and 0 <= new_y < self.board.height:
                     piece_on_new_pos = self.board.get_piece(new_x, new_y)
-                    if (piece_on_new_pos is None or piece_on_new_pos.player is not self.player):
+                    if piece_on_new_pos is None or piece_on_new_pos.player is not self.player:
                         moves.append(Move(self, new_x, new_y))
             return moves
 

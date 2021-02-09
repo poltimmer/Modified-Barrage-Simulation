@@ -2,6 +2,7 @@ from __future__ import annotations
 from typing import Optional
 from enum import Enum
 
+
 class PieceType(Enum):
     FLAG = 0
     BOMB = 1
@@ -12,7 +13,7 @@ class PieceType(Enum):
     MARSHALL = 6
 
     def can_move(self) -> bool:
-        if (self == PieceType.FLAG or self == PieceType.BOMB):
+        if self == PieceType.FLAG or self == PieceType.BOMB:
             return False
         else:
             return True
@@ -57,4 +58,3 @@ class PieceType(Enum):
             return PieceType.SPY
         else:
             raise Exception("Invalid typechar: " + character)
-

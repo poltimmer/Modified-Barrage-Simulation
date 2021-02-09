@@ -1,10 +1,13 @@
 from typing import Optional
-import piece
-Piece = lambda: piece.Piece
+
 from enums.player import Player
 from enums.piecetype import PieceType
+import piece
 import move
+
+Piece = lambda: piece.Piece
 Move = lambda: move.Move
+
 
 class Board:
     def __init__(self, positions: list):
@@ -12,14 +15,13 @@ class Board:
         self.height = len(positions[0])
         self.positions = positions
         self.pieces = [set()] * 2
-        
+
         # Construct the pieces sets and fill their board variable
         for column in positions:
             for piece in column:
                 if piece:
                     piece.board = self
                     self.pieces[piece.player.value].add(piece)
-        
 
     def get_player_moves(self, player: Player) -> [Move]:
         moves: [Move] = []
@@ -70,7 +72,6 @@ class Board:
                 piece.x = x
                 piece.y = y
                 self.positions[x][y] = piece
-        
+
         # Return whether a flag was captured
         return opponent is not None and opponent.piece_type == PieceType.FLAG
-

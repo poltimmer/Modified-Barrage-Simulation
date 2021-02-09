@@ -1,9 +1,12 @@
+import random
+
 from typing import Optional
 from enums.player import Player
 from board import Board
 import move
-import random
+
 Move = lambda: move.Move
+
 
 class Game:
     def __init__(self, board: Board, next_to_move: Player):
@@ -24,7 +27,7 @@ class Game:
             self.done = True
         else:
             self.next_to_move = self.next_to_move.opposite()
-        
+
     def get_winner(self) -> Optional[Player]:
         return self.winner
 
@@ -35,7 +38,7 @@ class Game:
         while not self.done:
             # Determine all possible moves
             available_moves = self.board.get_player_moves(self.next_to_move)
-            
+
             # Catch end conditions where one or both have no moves available
             if len(available_moves) == 0:
                 if len(self.board.get_player_moves(self.next_to_move.opposite())) == 0:
@@ -50,7 +53,3 @@ class Game:
                 # Make a random move out of all available moves
                 move = random.choice(available_moves)
                 self.do_move(move)
-            
-        
-
-        

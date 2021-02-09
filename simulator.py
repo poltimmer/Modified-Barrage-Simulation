@@ -1,12 +1,15 @@
 from typing import Optional
-import move
-Move = lambda: move.Move
-import piece
-Piece = lambda *args: piece.Piece(*args)
+
 from board import Board
 from game import Game
 from enums.piecetype import PieceType
 from enums.player import Player
+import move
+import piece
+
+Move = lambda: move.Move
+Piece = lambda *args: piece.Piece(*args)
+
 
 class Simulator:
     def __init__(self):
@@ -23,15 +26,15 @@ class Simulator:
         """
         Returns 2d array of pieces read in from file 'path'
         """
-        positions = [[None]*4 for _ in range(6)]
+        positions = [[None] * 4 for _ in range(6)]
 
         f = open(path, "r")
         for y, line in enumerate(f):
             pieces = line.rstrip("\n").split(" ")
-            for x, piece_chars in enumerate(pieces): 
+            for x, piece_chars in enumerate(pieces):
                 color = piece_chars[:1]
                 piece_chars = piece_chars[1:]
-                
+
                 # Detemine player
                 player = Player.get_from_character(color)
 
@@ -42,6 +45,3 @@ class Simulator:
                     piece = Piece(player, piece_type, x, y)
                     positions[x][y] = piece
         return positions
-
-
-
