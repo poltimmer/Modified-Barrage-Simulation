@@ -1,10 +1,13 @@
+from enums.piecetype import PieceType
 from enums.player import Player
 from simulator import Simulator
+from itertools import permutations
 
 
 def q1():
     sim = Simulator()
-    n = 1000  # TODO Determine how many games to play
+    n = 38415  # TODO Determine how many games to play
+    n = 100  # TODO Determine how many games to play
 
     # Use default starting positions
     positions = sim.get_positions_from_file('./input.txt')
@@ -26,6 +29,15 @@ def q1():
     n_spies_alive = len([result for result in results if result.both_spies_alive])
     n_spies_not_alive = len([result for result in results if not result.both_spies_alive])
     print(f"Both spies alive: Yes {n_spies_alive}, No {n_spies_not_alive}")
+
+
+def q3():
+    options = [PieceType.BOMB, PieceType.FLAG, PieceType.FLAG]
+    perms = set(permutations(options))
+    for i in perms:
+        print(i)
+
+
 
     # TODO Condition on whether Red wins and whether Blue wins
 
