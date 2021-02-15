@@ -36,24 +36,28 @@ def q1():
     print_results(results, n)
 
 
+def get_positions_from_permutation(perm, pos_orig):
+    positions = list(pos_orig)
+    piecelist = [Piece(player=Player.RED, piece_type=piecetype, x=int(math.floor(i/4)), y=i%4) for (i, piecetype) in enumerate(perm)]
+    positions[0] = piecelist[:4]
+    positions[1] = piecelist[4:]
+    return positions
+
 def q3():
     sim = Simulator()
-    positions = sim.get_positions_from_file('./input.txt')
+    positions_original = sim.get_positions_from_file('./input.txt')
     options = [PieceType.MARSHALL, PieceType.GENERAL, PieceType.MINER, PieceType.SCOUT, PieceType.SCOUT, PieceType.SPY, PieceType.BOMB]
-    piece_permutations = list(set(permutations(options)))
-    for permutation in piece_permutations[:1]: # limited to first permutation
-        for flagpos in range(4):
-            permcopy = list(permutation)
-            permcopy.insert(flagpos, PieceType.FLAG)
-            # piece_list.append(permcopy)
-            finalpos = list(positions)
-            piecelist = [Piece(player=Player.RED, piece_type=piecetype, x=int(math.floor(i/4)), y=i%4) for (i, piecetype) in enumerate(permcopy)]
-            # pprint([(piece.x, piece.y, piece.piece_type) for piece in piecelist])
-            finalpos[0] = piecelist[:4]
-            finalpos[1] = piecelist[4:]
-            # pprint([[piece for piece in row] for row in finalpos])
-            results = sim.play_games(100, finalpos)
-            print_results(results, 100)
+    piece_permutations = [list(permutation) for permutation in set(permutations(options)) for _ in range(4)]
+    piece_permutations = [permutation.insert(i%4, PieceType.FLAG) or permutation for i, permutation in enumerate(piece_permutations)]
+    
+    results = []
+    for permutation in piece_permutations[:4]: # limited to first permutation
+        positions = get_positions_from_permutation(permutation, positions_original)
+        results.append(sim.play_games(100, positions))
+    
+    for permutation, result in zip(piece_permutations, results):
+        pprint(permutation)
+        print_results(result, 100)
 
 
 
