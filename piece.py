@@ -35,12 +35,16 @@ class Piece:
                 directions.append(Direction.LEFT)
             moves = []
             for direction in directions:
-                new_x = self.x + direction.get_dx()
                 new_y = self.y + direction.get_dy()
-                if 0 <= new_x < self.board.width and 0 <= new_y < self.board.height:
-                    piece_on_new_pos = self.board.get_piece(new_x, new_y)
-                    if piece_on_new_pos is None or piece_on_new_pos.player is not self.player:
-                        moves.append(Move(self, new_x, new_y))
+                if new_y < 0 or new_y >= self.board.height:
+                    continue
+                new_x = self.x + direction.get_dx()
+                if new_x < 0 or new_x >= self.board.width:
+                    continue
+
+                piece_on_new_pos = self.board.get_piece(new_x, new_y)
+                if not piece_on_new_pos or piece_on_new_pos.player != self.player:
+                    moves.append(Move(self, new_x, new_y))
             return moves
 
     def __str__(self):

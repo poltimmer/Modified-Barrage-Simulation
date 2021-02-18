@@ -8,6 +8,7 @@ class Direction(Enum):
     LEFT = 3
 
     def get_dx(self) -> int:
+        # if-statement is faster than branchless
         if self == Direction.RIGHT:
             return 1
         elif self == Direction.LEFT:
@@ -16,6 +17,7 @@ class Direction(Enum):
             return 0
 
     def get_dy(self) -> int:
+        # if-statement is faster than branchless
         if self == Direction.UP:
             return 1
         elif self == Direction.DOWN:

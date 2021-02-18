@@ -4,7 +4,10 @@ from simulator import Simulator
 from itertools import permutations
 from pprint import pprint
 from piece import Piece
+from gameresult import GameResult
 import math
+from statistics import mean
+from tqdm import tqdm
 
 
 def print_results(results, n):
@@ -45,19 +48,47 @@ def get_positions_from_permutation(perm, pos_orig):
 
 def q3():
     sim = Simulator()
+    n_runs_all = 50
+    n_runs_1k = 500
+    n_runs_100 = 5000
+    n_runs_10 = 38415
+
+
     positions_original = sim.get_positions_from_file('./input.txt')
     options = [PieceType.MARSHALL, PieceType.GENERAL, PieceType.MINER, PieceType.SCOUT, PieceType.SCOUT, PieceType.SPY, PieceType.BOMB]
     piece_permutations = [list(permutation) for permutation in set(permutations(options)) for _ in range(4)]
     piece_permutations = [permutation.insert(i%4, PieceType.FLAG) or permutation for i, permutation in enumerate(piece_permutations)]
     
-    results = []
-    for permutation in piece_permutations[:4]: # limited to first permutation
+    results_list: list[list[GameResult]] = []
+    for permutation in tqdm(piece_permutations): # limited to first few permutations
         positions = get_positions_from_permutation(permutation, positions_original)
-        results.append(sim.play_games(100, positions))
+        results_list.append(sim.play_games(n_runs_all, positions))
     
-    for permutation, result in zip(piece_permutations, results):
-        pprint(permutation)
-        print_results(result, 100)
+    red_winrates = [mean([(result.winner == Player.RED) for result in results]) for results in results_list]
+    sorted_winrates = sorted(zip(piece_permutations, red_winrates), key=lambda entry: entry[1], reverse=True)
+    top_1k = sorted_winrates[:1000]
+
+
+    results_list_1k = []
+    for permutation in tqdm(top_1k[:][0]):
+        positions = get_positions_from_permutation(permutation, positions_original)
+        results_list_1k.append(sim.play_games(n_runs_1k, positions))
+
+    red_winrates = [mean([(result.winner == Player.RED) for result in results]) for results in results_list]
+    sorted_winrates = sorted(zip(piece_permutations, red_winrates), key=lambda entry: entry[1], reverse=True)
+    top_100 = sorted_winrates[:100]
+
+
+    results_list_100 = []
+    for permutation in tqdm(top_100[:][0]):
+        positions = get_positions_from_permutation(permutation, positions_original)
+        results_list_100.append(sim.play_games(n_runs_100, positions))
+
+    red_winrates = [mean([(result.winner == Player.RED) for result in results]) for results in results_list]
+    sorted_winrates = sorted(zip(piece_permutations, red_winrates), key=lambda entry: entry[1], reverse=True)
+    top_10 = sorted_winrates[:10]
+
+    pprint(top_10)
 
 
 
@@ -66,4 +97,4 @@ def q3():
 
 
 if __name__ == "__main__":
-    q3()
+    q1()

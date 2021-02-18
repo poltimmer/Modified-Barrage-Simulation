@@ -13,10 +13,7 @@ class PieceType(Enum):
     MARSHALL = 6
 
     def can_move(self) -> bool:
-        if self == PieceType.FLAG or self == PieceType.BOMB:
-            return False
-        else:
-            return True
+        return self != PieceType.FLAG and self != PieceType.BOMB
 
     def get_survivor_if_hits(self, opponent: PieceType) -> Optional[PieceType]:
         """
