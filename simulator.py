@@ -62,9 +62,11 @@ class Simulator:
                     positions[x][y] = piece
         return positions
 
-    def play_games(self, num_games: int, positions: [[Optional[Piece]]]) -> [GameResult]:
+    @staticmethod
+    def play_games(num_games: int, positions: [[Optional[Piece]]]) -> [GameResult]:
         results = []
+        sim: Simulator = Simulator()
         for _ in range(num_games):
-            result = self.play_game(positions)
+            result = sim.play_game(positions)
             results.append(result)
         return results
