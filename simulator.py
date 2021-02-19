@@ -1,7 +1,7 @@
 from copy import deepcopy
 from typing import Optional
 
-from tqdm.contrib.concurrent import process_map
+from tqdm.contrib.concurrent import process_map, cpu_count
 
 import move
 import piece
@@ -75,7 +75,7 @@ class Simulator:
         if multithreaded:
             positions_list = [positions] * num_games
             start_player_list = [start_player] * num_games
-            return process_map(Simulator.play_game, positions_list, start_player_list, chunksize=100)
+            return process_map(Simulator.play_game, positions_list, start_player_list, chunksize=100, max_workers=cpu_count()-1)
         else:
             results = []
             sim: Simulator = Simulator()
