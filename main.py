@@ -9,9 +9,11 @@ from statistics import mean
 from tqdm import tqdm
 from tqdm.contrib.concurrent import process_map
 
+from board import Board
 from enums.piecetype import PieceType
 from enums.player import Player
 from gameresult import GameResult
+from move import Move
 from piece import Piece
 from simulator import Simulator
 
@@ -36,18 +38,38 @@ def print_results(results, n):
 def q1():
     sim = Simulator()
     n = 38415  # TODO Determine how many games to play
-    n = 100  # TODO Determine how many games to play
+    # n = 100  # TODO Determine how many games to play
 
     # Use default starting positions
-    positions = sim.get_positions_from_file('./input.txt')
+    positions = Simulator.get_positions_from_file('./input.txt')
 
     # Play the games
     time_start = time.time()
-    results = sim.play_games(n, positions, multithreaded=True)
+    results = Simulator.play_games(n, positions, multithreaded=True)
     time_end = time.time()
     print("Done running", n, "simulations. That took", time_end - time_start, "seconds.")
 
     print_results(results, n)
+
+
+def q2():
+    n = 38415
+
+    # Use default starting positions
+    positions = Simulator.get_positions_from_file('./input.txt')
+
+    # Determine available moves for red
+    board: Board = Board(positions)
+    red_moves: [Move] = board.get_player_moves(Player.RED)
+    for red_move in red_moves:
+        print("==== Available move ====")
+        print("Piece player:", red_move.piece.player)
+        print("Piece type:", red_move.piece.piece_type)
+        print("From: (", red_move.piece.x, ",", red_move.piece.y, ")")
+        print("To: (", red_move.new_pos_x, ",", red_move.new_pos_y,")")
+
+    # Simulator.play_games(n, positions, multithreaded=True)
+    pass
 
 
 def get_positions_from_permutation(perm, pos_orig):

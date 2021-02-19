@@ -14,7 +14,7 @@ class Board:
         self.width = len(positions)
         self.height = len(positions[0])
         self.positions = positions
-        self.pieces = [set()] * 2
+        self.pieces = [set(), set()]
 
         # Construct the pieces sets and fill their board variable
         for column in positions:
