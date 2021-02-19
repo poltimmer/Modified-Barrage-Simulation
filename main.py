@@ -1,8 +1,8 @@
 import functools
 import math
 import time
+from copy import deepcopy
 from itertools import permutations
-from multiprocessing import Pool
 from pprint import pprint
 from statistics import mean
 
@@ -61,15 +61,32 @@ def q2():
     # Determine available moves for red
     board: Board = Board(positions)
     red_moves: [Move] = board.get_player_moves(Player.RED)
-    for red_move in red_moves:
-        print("==== Available move ====")
-        print("Piece player:", red_move.piece.player)
-        print("Piece type:", red_move.piece.piece_type)
-        print("From: (", red_move.piece.x, ",", red_move.piece.y, ")")
-        print("To: (", red_move.new_pos_x, ",", red_move.new_pos_y,")")
 
-    # Simulator.play_games(n, positions, multithreaded=True)
-    pass
+    # Determine win rate of each first move
+    print(f"Determining win rates of each of the {len(red_moves)} first possible moves of RED.")
+    win_rates = []
+    for red_move in red_moves:
+        # Calculate the board position after RED's first move
+        # To do this, a new board is generated, and the same position's piece instance is found on this new board
+        board: Board = Board(deepcopy(positions))
+        piece: Piece = board.get_piece(red_move.piece.x, red_move.piece.y)
+        board.set_piece(piece, red_move.new_pos_x, red_move.new_pos_y)
+        positions_after_move = board.positions
+
+        # Play n games from this position where BLUE is next to play
+        results = Simulator.play_games(n, positions_after_move, start_player=Player.BLUE)
+
+        # Determine the win rate of RED
+        win_rate = mean([(result.winner == Player.RED) for result in results])
+        win_rates.append(win_rate)
+
+    for red_move, win_rate in zip(red_moves, win_rates):
+        print("==== Available move ====")
+        print(f"Piece player: {red_move.piece.player}")
+        print(f"Piece type: {red_move.piece.piece_type}")
+        print(f"From: ({red_move.piece.x}, {red_move.piece.y})")
+        print(f"To: ({red_move.new_pos_x}, {red_move.new_pos_y})")
+        print(f"Winrate: {win_rate} ({win_rate * 100})%")
 
 
 def get_positions_from_permutation(perm, pos_orig):
@@ -141,4 +158,4 @@ def q3_run_permutations(positions, n_runs_per_position, multithreaded=True) -> [
 
 
 if __name__ == "__main__":
-    q3()
+    q2()
