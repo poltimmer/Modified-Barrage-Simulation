@@ -20,13 +20,13 @@ class Simulator:
         pass
 
     @staticmethod
-    def play_game(positions: [[Optional[Piece]]]) -> GameResult:
+    def play_game(positions: [[Optional[Piece]]], start_player=Player.RED) -> GameResult:
         """
         Play one game and extract the results
         """
         # Play a game
         board = Board(deepcopy(positions))
-        game = Game(board, next_to_move=Player.RED)
+        game = Game(board, next_to_move=start_player)
         game.play_game()
 
         # Extract interesting results
@@ -66,10 +66,16 @@ class Simulator:
         return positions
 
     @staticmethod
-    def play_games(num_games: int, positions: [[Optional[Piece]]], multithreaded: bool = True) -> [GameResult]:
+    def play_games(
+            num_games: int,
+            positions: [[Optional[Piece]]],
+            start_player=Player.RED,
+            multithreaded: bool = True
+    ) -> [GameResult]:
         if multithreaded:
             positions_list = [positions] * num_games
-            return process_map(Simulator.play_game, positions_list, chunksize=100)
+            start_player_list = [start_player] * num_games
+            return process_map(Simulator.play_game, positions_list, start_player_list, chunksize=100)
         else:
             results = []
             sim: Simulator = Simulator()
