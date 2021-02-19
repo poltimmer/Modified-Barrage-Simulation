@@ -1,6 +1,7 @@
 import functools
 import math
 import time
+from copy import deepcopy
 from itertools import permutations
 from pprint import pprint
 from statistics import mean
@@ -66,12 +67,14 @@ def q2():
     win_rates = []
     for red_move in red_moves:
         # Calculate the board position after RED's first move
-        board: Board = Board(positions)
-        board.set_piece(red_move.piece, red_move.new_pos_x, red_move.new_pos_y)
+        # To do this, a new board is generated, and the same position's piece instance is found on this new board
+        board: Board = Board(deepcopy(positions))
+        piece: Piece = board.get_piece(red_move.piece.x, red_move.piece.y)
+        board.set_piece(piece, red_move.new_pos_x, red_move.new_pos_y)
         positions_after_move = board.positions
 
         # Play n games from this position where BLUE is next to play
-        results = Simulator.play_games(n, positions, start_player=Player.BLUE)
+        results = Simulator.play_games(n, positions_after_move, start_player=Player.BLUE)
 
         # Determine the win rate of RED
         win_rate = mean([(result.winner == Player.RED) for result in results])
@@ -162,4 +165,4 @@ def q3_run_permutations(positions, n_runs_per_position, multithreaded=True) -> [
 
 
 if __name__ == "__main__":
-    q3()
+    q2()
