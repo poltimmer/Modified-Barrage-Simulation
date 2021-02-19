@@ -1,12 +1,14 @@
-from typing import Optional
 from copy import deepcopy
+from typing import Optional
 
-from board import Board
-from game import Game
-from enums.piecetype import PieceType
-from enums.player import Player
+from tqdm.contrib.concurrent import process_map
+
 import move
 import piece
+from board import Board
+from enums.piecetype import PieceType
+from enums.player import Player
+from game import Game
 from gameresult import GameResult
 
 Move = lambda: move.Move
@@ -17,7 +19,8 @@ class Simulator:
     def __init__(self):
         pass
 
-    def play_game(self, positions: [[Optional[Piece]]]) -> GameResult:
+    @staticmethod
+    def play_game(positions: [[Optional[Piece]]]) -> GameResult:
         """
         Play one game and extract the results
         """
@@ -63,10 +66,14 @@ class Simulator:
         return positions
 
     @staticmethod
-    def play_games(num_games: int, positions: [[Optional[Piece]]]) -> [GameResult]:
-        results = []
-        sim: Simulator = Simulator()
-        for _ in range(num_games):
-            result = sim.play_game(positions)
-            results.append(result)
-        return results
+    def play_games(num_games: int, positions: [[Optional[Piece]]], multithreaded: bool = True) -> [GameResult]:
+        if multithreaded:
+            positions_list = [positions] * num_games
+            return process_map(Simulator.play_game, positions_list, chunksize=100)
+        else:
+            results = []
+            sim: Simulator = Simulator()
+            for _ in range(num_games):
+                result = sim.play_game(positions)
+                results.append(result)
+            return results

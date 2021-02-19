@@ -7,6 +7,7 @@ from pprint import pprint
 from statistics import mean
 
 from tqdm import tqdm
+from tqdm.contrib.concurrent import process_map
 
 from enums.piecetype import PieceType
 from enums.player import Player
@@ -41,7 +42,11 @@ def q1():
     positions = sim.get_positions_from_file('./input.txt')
 
     # Play the games
-    results = sim.play_games(n, positions)
+    time_start = time.time()
+    results = sim.play_games(n, positions, multithreaded=True)
+    time_end = time.time()
+    print("Done running", n, "simulations. That took", time_end - time_start, "seconds.")
+
     print_results(results, n)
 
 
@@ -94,14 +99,16 @@ def q3():
 
 
 def q3_run_permutations(positions, n_runs_per_position, multithreaded=True) -> [[GameResult]]:
-    if multithreaded:
-        with Pool(20) as pool:
-            partial_func = functools.partial(Simulator.play_games, n_runs_per_position)
-            return pool.map(partial_func, positions)
+    # True iff multithreading is applied separately per position/permutation (so in the simulator)
+    multithread_sim = multithreaded and len(positions) < 20
+
+    if multithreaded and not multithread_sim:
+        partial_func = functools.partial(Simulator.play_games, n_runs_per_position, multithreaded=multithread_sim)
+        return process_map(partial_func, positions, chunksize=1)
     else:
         results_list: [[GameResult]] = []
         for position in tqdm(positions):
-            results_list.append(Simulator.play_games(n_runs_per_position, position))
+            results_list.append(Simulator.play_games(n_runs_per_position, position, multithreaded=multithread_sim))
         return results_list
 
 
