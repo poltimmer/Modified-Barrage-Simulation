@@ -94,18 +94,11 @@ def q3():
     # Run runs reducing the size of the position set each time
     runs = [
         # Reduce to this many positions | Run this many of each position
-        [1000, 50],
-        [100, 500],
-        [10, 5000],
+        [1000, 100],
+        [100, 1000],
+        [10, 10000],
         [1, 38415]
     ]
-    # runs = [
-    #     # Reduce to this many positions | Run this many of each position
-    #     [1000, 10],
-    #     [100, 100],
-    #     [10, 1000],
-    #     [1, 5000],
-    # ]
     time_start = time.time()
     for run in runs:
         reduce_to = run[0]
