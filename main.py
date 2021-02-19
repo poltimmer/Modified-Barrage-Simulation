@@ -7,7 +7,7 @@ from pprint import pprint
 from statistics import mean
 
 from tqdm import tqdm
-from tqdm.contrib.concurrent import process_map
+from tqdm.contrib.concurrent import process_map, cpu_count
 
 from board import Board
 from enums.piecetype import PieceType
@@ -18,7 +18,7 @@ from piece import Piece
 from simulator import Simulator
 
 
-def print_results(results, n):
+def print_results(results):
     # Inspect winner results
     n_red = len([result for result in results if result.winner == Player.RED])
     n_blue = len([result for result in results if result.winner == Player.BLUE])
@@ -26,7 +26,7 @@ def print_results(results, n):
     print(f"Winners: Red {n_red}, Blue {n_blue}, Draw: {n_draw}")
 
     # Inspect average number of moves
-    steps_avg = sum([result.steps for result in results]) / n
+    steps_avg = mean([result.steps for result in results])
     print(f"Average #steps: {steps_avg}")
 
     # Inspect whether both spies stayed alive
@@ -49,7 +49,7 @@ def q1():
     time_end = time.time()
     print("Done running", n, "simulations. That took", time_end - time_start, "seconds.")
 
-    print_results(results, n)
+    print_results(results)
 
 
 def q2():
@@ -99,14 +99,21 @@ def q3():
         [10, 5000],
         [1, 38415]
     ]
+    # runs = [
+    #     # Reduce to this many positions | Run this many of each position
+    #     [1000, 10],
+    #     [100, 100],
+    #     [10, 1000],
+    #     [1, 5000],
+    # ]
     time_start = time.time()
     for run in runs:
         reduce_to = run[0]
         n_runs_per_perm = run[1]
         print("Reducing", len(positions), "positions to", reduce_to,
               "positions by running", n_runs_per_perm, "of each.")
-        results = q3_run_permutations(positions, n_runs_per_perm)
-        red_winrates = [mean([(result.winner == Player.RED) for result in results]) for results in results]
+        results2d = q3_run_permutations(positions, n_runs_per_perm)
+        red_winrates = [mean([(result.winner == Player.RED) for result in results]) for results in results2d]
         sorted_winrates = sorted(zip(positions, red_winrates), key=lambda entry: entry[1], reverse=True)
         positions = [pos[0] for pos in sorted_winrates[:reduce_to]]
     time_end = time.time()
@@ -114,8 +121,14 @@ def q3():
     top_position = positions[0]
     print("Top position:")
     pprint(top_position)
+    pprint([[piece.piece_type if hasattr(piece, 'piece_type') else None for piece in row] for row in top_position])
 
     print("Calculation took", time_end - time_start, "seconds.")
+
+    results_final = Simulator.play_games(38415, top_position)
+
+    print_results(results_final)
+    print(mean([(result.winner == Player.RED) for result in results_final]))
 
     # TODO Condition on whether Red wins and whether Blue wins
 
@@ -126,12 +139,12 @@ def q3_run_permutations(positions, n_runs_per_position, multithreaded=True) -> [
 
     if multithreaded and not multithread_sim:
         partial_func = functools.partial(Simulator.play_games, n_runs_per_position, multithreaded=multithread_sim)
-        return process_map(partial_func, positions, chunksize=1)
+        return process_map(partial_func, positions, chunksize=1, max_workers=cpu_count()-1)
     else:
-        results_list: [[GameResult]] = []
+        results2d: [[GameResult]] = []
         for position in tqdm(positions):
-            results_list.append(Simulator.play_games(n_runs_per_position, position, multithreaded=multithread_sim))
-        return results_list
+            results2d.append(Simulator.play_games(n_runs_per_position, position, multithreaded=multithread_sim))
+        return results2d
 
 
 if __name__ == "__main__":
