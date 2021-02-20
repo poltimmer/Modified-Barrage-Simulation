@@ -36,9 +36,7 @@ def print_results(results):
 
 
 def q1():
-    sim = Simulator()
-    n = 38415  # TODO Determine how many games to play
-    # n = 100  # TODO Determine how many games to play
+    n = 39204
 
     # Use default starting positions
     positions = Simulator.get_positions_from_file('./input.txt')
@@ -149,7 +147,7 @@ def q3_run_permutations(positions, n_runs_per_position, multithreaded=True) -> [
 
     if multithreaded and not multithread_sim:
         partial_func = functools.partial(Simulator.play_games, n_runs_per_position, multithreaded=multithread_sim)
-        return process_map(partial_func, positions, chunksize=1, max_workers=cpu_count()-1)
+        return process_map(partial_func, positions, chunksize=1, max_workers=cpu_count() - 1)
     else:
         results2d: [[GameResult]] = []
         for position in tqdm(positions):
@@ -157,5 +155,9 @@ def q3_run_permutations(positions, n_runs_per_position, multithreaded=True) -> [
         return results2d
 
 
+def get_variance(mean, samples):
+    return sum([(sample - mean) ** 2 for sample in samples]) / (len(samples) - 1)
+
+
 if __name__ == "__main__":
-    q2()
+    q1()
