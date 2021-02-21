@@ -29,7 +29,8 @@ def print_results(results):
 
     # Inspect average number of moves
     steps_avg = mean([result.steps for result in results])
-    print(f"Average #steps: {steps_avg}")
+    steps_avg_var = get_variance(steps_avg, [result.steps for result in results])
+    print(f"Average #steps: {steps_avg} with variance {steps_avg_var}.")
 
     # Inspect whether both spies stayed alive
     n_spies_alive = len([result for result in results if result.both_spies_alive])
@@ -45,7 +46,7 @@ def q1():
 
     # Play the games
     time_start = time.time()
-    results = Simulator.play_games(n, positions, multithreaded=False, step_by_step=False)
+    results = Simulator.play_games(n, positions, multithreaded=True, step_by_step=False)
     time_end = time.time()
     print("Done running", n, "simulations. That took", time_end - time_start, "seconds.")
 
