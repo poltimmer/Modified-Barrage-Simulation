@@ -22,8 +22,8 @@ class Game:
         Execute a move and switch who may move next
         """
         self.steps += 1
-        done = self.board.set_piece(move.piece, move.new_pos_x, move.new_pos_y)
-        if done:
+        flag_captured = self.board.set_piece(move.piece, move.new_pos_x, move.new_pos_y)
+        if flag_captured:
             self.winner = self.next_to_move
             self.done = True
         else:
@@ -57,10 +57,13 @@ class Game:
             else:
                 # Make a random move out of all available moves
                 move = random.choice(available_moves)
+
+                if step_by_step:
+                    print("= Playing", move)
+
                 self.do_move(move)
 
                 if step_by_step:
-                    print("= Played", move)
                     print("= Result:")
                     print(self.board)
                     input("Press enter to continue\n")
