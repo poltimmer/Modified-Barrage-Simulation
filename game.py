@@ -40,7 +40,7 @@ class Game:
             # Determine all possible moves
             available_moves: [Move] = self.board.get_player_moves(self.next_to_move)
             if step_by_step:
-                print("="*5, "Step information", "="*5)
+                print("=" * 5, "Step information", "=" * 5)
                 print("- Available moves:")
                 pprint.pprint([str(move) for move in available_moves])
 
@@ -57,10 +57,10 @@ class Game:
             else:
                 # Make a random move out of all available moves
                 move = random.choice(available_moves)
+                self.do_move(move)
 
                 if step_by_step:
-                    print("= Playing", move)
-                    self.do_move(move)
+                    print("= Played", move)
                     print("= Result:")
                     print(self.board)
                     input("Press enter to continue\n")

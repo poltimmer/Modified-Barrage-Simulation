@@ -19,6 +19,8 @@ from simulator import Simulator
 
 
 def print_results(results):
+    print("===== Results =====")
+
     # Inspect winner results
     n_red = len([result for result in results if result.winner == Player.RED])
     n_blue = len([result for result in results if result.winner == Player.BLUE])
@@ -47,7 +49,17 @@ def q1():
     time_end = time.time()
     print("Done running", n, "simulations. That took", time_end - time_start, "seconds.")
 
+    # General results
     print_results(results)
+
+    # Results where Red wins
+    print_results([result for result in results if result.winner == Player.RED])
+
+    # Results where Blue wins
+    print_results([result for result in results if result.winner == Player.BLUE])
+
+    # Results where neither wins (not asked by Q1 but still interesting)
+    print_results([result for result in results if result.winner is None])
 
 
 def q2():
