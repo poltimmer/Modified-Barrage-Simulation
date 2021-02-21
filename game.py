@@ -1,3 +1,4 @@
+import pprint
 import random
 
 from typing import Optional
@@ -31,13 +32,17 @@ class Game:
     def get_winner(self) -> Optional[Player]:
         return self.winner
 
-    def play_game(self) -> Optional[Player]:
+    def play_game(self, step_by_step=False) -> Optional[Player]:
         """
         Play the game until the end by making random moves
         """
         while not self.done:
             # Determine all possible moves
-            available_moves = self.board.get_player_moves(self.next_to_move)
+            available_moves: [Move] = self.board.get_player_moves(self.next_to_move)
+            if step_by_step:
+                print("="*5, "Step information", "="*5)
+                print("- Available moves:")
+                pprint.pprint([str(move) for move in available_moves])
 
             # Catch end conditions where one or both have no moves available
             if len(available_moves) == 0:
@@ -52,4 +57,10 @@ class Game:
             else:
                 # Make a random move out of all available moves
                 move = random.choice(available_moves)
-                self.do_move(move)
+
+                if step_by_step:
+                    print("= Playing", move)
+                    self.do_move(move)
+                    print("= Result:")
+                    print(self.board)
+                    input("Press enter to continue\n")

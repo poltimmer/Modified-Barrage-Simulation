@@ -36,14 +36,14 @@ def print_results(results):
 
 
 def q1():
-    n = 39204
+    n = 38416
 
     # Use default starting positions
     positions = Simulator.get_positions_from_file('./input.txt')
 
     # Play the games
     time_start = time.time()
-    results = Simulator.play_games(n, positions, multithreaded=True)
+    results = Simulator.play_games(n, positions, multithreaded=False, step_by_step=False)
     time_end = time.time()
     print("Done running", n, "simulations. That took", time_end - time_start, "seconds.")
 

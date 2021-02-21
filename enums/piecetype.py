@@ -55,3 +55,6 @@ class PieceType(Enum):
             return PieceType.SPY
         else:
             raise Exception("Invalid typechar: " + character)
+
+    def __str__(self):
+        return self._name_

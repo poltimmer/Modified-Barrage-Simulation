@@ -20,14 +20,14 @@ class Simulator:
         pass
 
     @staticmethod
-    def play_game(positions: [[Optional[Piece]]], start_player=Player.RED) -> GameResult:
+    def play_game(positions: [[Optional[Piece]]], start_player=Player.RED, step_by_step=False) -> GameResult:
         """
         Play one game and extract the results
         """
         # Play a game
         board = Board(deepcopy(positions))
         game = Game(board, next_to_move=start_player)
-        game.play_game()
+        game.play_game(step_by_step=step_by_step)
 
         # Extract interesting results
         winner = game.get_winner()
@@ -70,8 +70,12 @@ class Simulator:
             num_games: int,
             positions: [[Optional[Piece]]],
             start_player=Player.RED,
-            multithreaded: bool = True
+            multithreaded: bool = True,
+            step_by_step: bool = False
     ) -> [GameResult]:
+        if multithreaded and step_by_step:
+            raise Exception("Multithreading and step by step reporting not compatible together")
+
         if multithreaded:
             positions_list = [positions] * num_games
             start_player_list = [start_player] * num_games
@@ -80,6 +84,6 @@ class Simulator:
             results = []
             sim: Simulator = Simulator()
             for _ in range(num_games):
-                result = sim.play_game(positions)
+                result = sim.play_game(positions, start_player=start_player, step_by_step=step_by_step)
                 results.append(result)
             return results

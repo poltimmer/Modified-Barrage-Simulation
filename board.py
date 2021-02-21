@@ -75,3 +75,18 @@ class Board:
 
         # Return whether a flag was captured
         return opponent is not None and opponent.piece_type == PieceType.FLAG
+
+    def __str__(self):
+        output = ""
+        for y in range(self.height):
+            row = "|"
+            for x in range(self.width):
+                piece = self.positions[x][y]
+                if piece is None:
+                    row += " XXX |"
+                else:
+                    red = "\033[91m"
+                    blue = "\033[94m"
+                    row += f" {red if piece.player == Player.RED else blue}{str(piece.piece_type)[:3]} \033[0m|"
+            output += row + "\n"
+        return output
