@@ -3,7 +3,6 @@ import math
 import time
 from copy import deepcopy
 from itertools import permutations
-from pprint import pprint
 from statistics import mean
 
 from tqdm import tqdm
@@ -126,7 +125,7 @@ def q3():
         [1000, 100],
         [100, 1000],
         [10, 10000],
-        [1, 38415]
+        [1, 38416]
     ]
     time_start = time.time()
     for run in runs:
@@ -146,15 +145,15 @@ def q3():
     print("Calculation took", time_end - time_start, "seconds.")
 
     n = 38416
-    print(f"Running {n} games to analyse our result")
+    print(f"Running {n} games to analyse our resulted position")
     results_final = Simulator.play_games(n, top_position)
 
     print_results(results_final)
     print(mean([(result.winner == Player.RED) for result in results_final]))
 
-    # TODO Condition on whether Red wins and whether Blue wins
 
 def q3_run_optimal():
+    # Run the optimal setup from q3_setup.txt
     n = 38416
     pos = Simulator.get_positions_from_file('./q3_setup.txt')
     results = Simulator.play_games(n, pos, multithreaded=True)
@@ -177,8 +176,16 @@ def q3_run_permutations(positions, n_runs_per_position, multithreaded=True) -> [
 
 
 def get_variance(mean, samples):
+    # Get the variance from a set of samples
     return sum([(sample - mean) ** 2 for sample in samples]) / (len(samples) - 1)
 
 
 if __name__ == "__main__":
-    q3_run_optimal()
+    print("\n" * 2, "=" * 20, "\n", "Running Q1", "\n", "=" * 20)
+    q1()
+
+    print("\n" * 2, "=" * 20, "\n", "Running Q2", "\n", "=" * 20)
+    q2()
+
+    print("\n" * 2, "=" * 20, "\n", "Running Q3", "\n", "=" * 20)
+    q3()
