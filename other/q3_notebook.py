@@ -22,15 +22,18 @@ n_runs_1k = 500
 n_runs_100 = 5000
 n_runs_10 = 38415
 
-
 positions_original = sim.get_positions_from_file('./input.txt')
-options = [PieceType.MARSHALL, PieceType.GENERAL, PieceType.MINER, PieceType.SCOUT, PieceType.SCOUT, PieceType.SPY, PieceType.BOMB]
+options = [PieceType.MARSHALL, PieceType.GENERAL, PieceType.MINER, PieceType.SCOUT, PieceType.SCOUT, PieceType.SPY,
+           PieceType.BOMB]
 piece_permutations = [list(permutation) for permutation in set(permutations(options)) for _ in range(4)]
-piece_permutations = [permutation.insert(i%4, PieceType.FLAG) or permutation for i, permutation in enumerate(piece_permutations)]
+piece_permutations = [permutation.insert(i % 4, PieceType.FLAG) or permutation for i, permutation in
+                      enumerate(piece_permutations)]
+
 
 # %%
 def get_top_permutations(permutation_list, n_runs, top_amount):
-    positions_list = [get_positions_from_permutation(permutation, positions_original) for permutation in piece_permutations]
+    positions_list = [get_positions_from_permutation(permutation, positions_original) for permutation in
+                      piece_permutations]
     play_games_partial = partial(Simulator.play_games, n_runs)
 
     results_list = p_map(play_games_partial, positions_list)
@@ -40,12 +43,13 @@ def get_top_permutations(permutation_list, n_runs, top_amount):
     top_perms = [entry[0] for entry in top_results]
     return top_perms
 
+
 # %%
 top_1k = get_top_permutations(piece_permutations, 50, 1000)
 
 # %%
 results_list = []
-for permutation in tqdm(piece_permutations): # limited to first few permutations
+for permutation in tqdm(piece_permutations):  # limited to first few permutations
     positions = get_positions_from_permutation(permutation, positions_original)
     results_list.append(sim.play_games(n_runs_all, positions))
 

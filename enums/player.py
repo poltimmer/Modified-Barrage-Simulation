@@ -15,6 +15,7 @@ class Player(Enum):
 
     @staticmethod
     def get_from_character(character: str) -> Optional[Player]:
+        """ From a character, get the player it represents """
         if character == 'R':
             return Player.RED
         elif character == 'B':

@@ -64,7 +64,7 @@ def q1():
 
 
 def q2():
-    n = 38415
+    n = 38416
 
     # Use default starting positions
     positions = Simulator.get_positions_from_file('./input.txt')
@@ -101,6 +101,7 @@ def q2():
 
 
 def get_positions_from_permutation(perm, pos_orig):
+    # Used for Q3, from a permutation compute the board positions that correspond to it
     positions = list(pos_orig)
     piecelist = [Piece(player=Player.RED, piece_type=piecetype, x=int(math.floor(i / 4)), y=i % 4) for (i, piecetype) in
                  enumerate(perm)]
@@ -122,17 +123,16 @@ def q3():
     # Run runs reducing the size of the position set each time
     runs = [
         # Reduce to this many positions | Run this many of each position
-        [1000, 100],
-        [100, 1000],
-        [10, 10000],
-        [1, 38415]
+        [1000, 2],
+        [100, 2],
+        [10, 2],
+        [1, 2]
     ]
     time_start = time.time()
     for run in runs:
         reduce_to = run[0]
         n_runs_per_perm = run[1]
-        print("Reducing", len(positions), "positions to", reduce_to,
-              "positions by running", n_runs_per_perm, "of each.")
+        print(f"Reducing {len(positions)} positions to {reduce_to} positions by running {n_runs_per_perm} of each.")
         results2d = q3_run_permutations(positions, n_runs_per_perm)
         red_winrates = [mean([(result.winner == Player.RED) for result in results]) for results in results2d]
         sorted_winrates = sorted(zip(positions, red_winrates), key=lambda entry: entry[1], reverse=True)
@@ -141,12 +141,13 @@ def q3():
 
     top_position = positions[0]
     print("Top position:")
-    pprint(top_position)
-    pprint([[piece.piece_type if hasattr(piece, 'piece_type') else None for piece in row] for row in top_position])
+    print(Board(top_position))
 
     print("Calculation took", time_end - time_start, "seconds.")
 
-    results_final = Simulator.play_games(38415, top_position)
+    n = 38416
+    print(f"Running {n} games to analyse our result")
+    results_final = Simulator.play_games(n, top_position)
 
     print_results(results_final)
     print(mean([(result.winner == Player.RED) for result in results_final]))
@@ -173,4 +174,4 @@ def get_variance(mean, samples):
 
 
 if __name__ == "__main__":
-    q1()
+    q3()

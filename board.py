@@ -14,7 +14,7 @@ class Board:
         self.width = len(positions)
         self.height = len(positions[0])
         self.positions = positions
-        self.pieces = [set(), set()]
+        self.pieces: [[Piece]] = [set(), set()]
 
         # Construct the pieces sets and fill their board variable
         for column in positions:
@@ -31,9 +31,9 @@ class Board:
         return moves
 
     def get_piece(self, x: int, y: int) -> Optional[Piece]:
-        '''
+        """
         Returns Piece at position (x,y)
-        '''
+        """
         return self.positions[x][y]
 
     def set_piece(self, piece: Piece, x: int, y: int) -> bool:
@@ -77,6 +77,7 @@ class Board:
         return opponent is not None and opponent.piece_type == PieceType.FLAG
 
     def __str__(self):
+        """ Produce a string representation of the board """
         output = ""
         for y in range(self.height):
             row = "|"
