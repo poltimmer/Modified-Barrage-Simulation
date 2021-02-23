@@ -153,6 +153,13 @@ def q3():
 
     # TODO Condition on whether Red wins and whether Blue wins
 
+def q3_run_optimal():
+    n = 38416
+    pos = Simulator.get_positions_from_file('./q3_setup.txt')
+    results = Simulator.play_games(n, pos, multithreaded=True)
+    print_results(results)
+    print("red win rate: " + str(mean([(result.winner == Player.RED) for result in results])))
+
 
 def q3_run_permutations(positions, n_runs_per_position, multithreaded=True) -> [[GameResult]]:
     # True iff multithreading is applied separately per position/permutation (so in the simulator)
@@ -173,4 +180,4 @@ def get_variance(mean, samples):
 
 
 if __name__ == "__main__":
-    q1()
+    q3_run_optimal()

@@ -32,7 +32,7 @@ class Game:
     def get_winner(self) -> Optional[Player]:
         return self.winner
 
-    def play_game(self, step_by_step=False) -> Optional[Player]:
+    def play_game(self, step_by_step=False):
         """
         Play the game until the end by making random moves
         """
@@ -53,7 +53,6 @@ class Game:
                     # Only the current player can't move anymore
                     self.winner = self.next_to_move.opposite()
                 self.done = True
-                return self.winner
             else:
                 # Make a random move out of all available moves
                 move = random.choice(available_moves)

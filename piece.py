@@ -27,25 +27,25 @@ class Piece:
         """
         if not self.piece_type.can_move():
             return []
-        else:
-            directions = [Direction.UP, Direction.DOWN]
-            if self.player == Player.RED:
-                directions.append(Direction.RIGHT)
-            else:
-                directions.append(Direction.LEFT)
-            moves = []
-            for direction in directions:
-                new_y = self.y + direction.get_dy()
-                if new_y < 0 or new_y >= self.board.height:
-                    continue
-                new_x = self.x + direction.get_dx()
-                if new_x < 0 or new_x >= self.board.width:
-                    continue
 
-                piece_on_new_pos = self.board.get_piece(new_x, new_y)
-                if not piece_on_new_pos or piece_on_new_pos.player != self.player:
-                    moves.append(Move(self, new_x, new_y))
-            return moves
+        directions = [Direction.UP, Direction.DOWN]
+        if self.player == Player.RED:
+            directions.append(Direction.RIGHT)
+        else:
+            directions.append(Direction.LEFT)
+        moves = []
+        for direction in directions:
+            new_y = self.y + direction.get_dy()
+            if new_y < 0 or new_y >= self.board.height:
+                continue
+            new_x = self.x + direction.get_dx()
+            if new_x < 0 or new_x >= self.board.width:
+                continue
+
+            piece_on_new_pos = self.board.get_piece(new_x, new_y)
+            if not piece_on_new_pos or piece_on_new_pos.player != self.player:
+                moves.append(Move(self, new_x, new_y))
+        return moves
 
     def __str__(self):
         return str(self.player) + ": " + str(self.piece_type)
