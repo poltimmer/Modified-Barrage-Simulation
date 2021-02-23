@@ -17,7 +17,7 @@ class PieceType(Enum):
 
     def get_survivor_if_hits(self, opponent: PieceType) -> Optional[PieceType]:
         """
-        Determine the piecetype that survives when a piece of this type hits another piece, or none if neither survive
+        Determine the PieceType that survives when a piece of this type hits another piece, or none if neither survive
         """
         both = [self, opponent]
         if PieceType.FLAG in both:
@@ -39,6 +39,7 @@ class PieceType(Enum):
 
     @staticmethod
     def get_from_character(character: str) -> PieceType:
+        """ From a character, get the PieceType it represents """
         if character == 'F':
             return PieceType.FLAG
         elif character == '3':
